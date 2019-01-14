@@ -10,4 +10,10 @@ typedef unsigned long uint64_t;
 
 #endif //WIN32
 
+#ifdef LINUX
+
+#include <string>
+
+#endif // LINUX
+
 #endif
