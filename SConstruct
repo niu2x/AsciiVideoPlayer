@@ -30,7 +30,7 @@ if platformArg == "windows":
 os.system(os.path.join('tools', 'gen_version.py'))
 os.system(os.path.join('tools', 'gen_config.py'))
 
-env.add_source_files(['src/main.cpp'])
+# env.add_source_files(['src/main.cpp'])
 
 Export("env")
 SConscript('src/core/SCSub')
@@ -38,4 +38,5 @@ SConscript('src/gen/SCSub')
 SConscript('src/third_party/SCSub')
 SConscript('src/platform/' + platformArg + '/SCSub')
 
-env.Program(target = BIN_NAME, source = env.get_source_files(), CCFLAGS = cFlags, CPPPATH='src')
+env.Program(target = BIN_NAME, source = ['src/main.cpp'] + env.get_source_files(), CCFLAGS = cFlags, CPPPATH='src')
+env.Program(target = 'testRef', source = ['src/test/test-ref.cpp'] + env.get_source_files(), CCFLAGS = cFlags, CPPPATH='src')

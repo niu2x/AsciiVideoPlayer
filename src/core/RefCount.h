@@ -1,22 +1,18 @@
 #ifndef REF_COUNT_H
 #define REF_COUNT_H
 
-class RefCount{
+#include "type.h"
+
+class SimpleRefCount{
 public:
-	virtual ~RefCount() = 0;
-	bool unref() = 0;
-	void ref() = 0;
-};
-
-
-class SimpleRefCount: public RefCount{
-
-public:
-	SimpleRefCount();
-	virtual ~SimpleRefCount();
-	bool unref();
-	void ref();
-
+	SimpleRefCount():counter(0){}
+	virtual ~SimpleRefCount(){}
+	inline bool unref(){
+		return --counter == 0;
+	}
+	inline void ref(){
+		counter ++;
+	}
 private:
 	uint32_t counter;
 };
