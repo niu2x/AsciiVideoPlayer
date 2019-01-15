@@ -1,7 +1,13 @@
 Import("env")
+
 env.add_source_files([
 ])
 
 subEnv = Environment()
+libCutePNG = subEnv.Library(source=['cute_png.c'])
 
-env.add_lib(subEnv.Library(source=['cute_png.c']))
+env.add_lib(libCutePNG)
+
+Export("env")
+
+# SConscript('ffmpeg/SCSub')

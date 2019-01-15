@@ -13,4 +13,6 @@ bool convert_image_to_ascii(
 	uint32_t bufferLen,
 	uint32_t *outLen);
 
+bool ascii_png(const char *, float sx, float sy);
+
 #endif

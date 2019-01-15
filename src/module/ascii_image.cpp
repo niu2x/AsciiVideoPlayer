@@ -2,6 +2,20 @@
 #include "core/log.h"
 #include <math.h>
 
+#ifdef LINUX
+	#include <curses.h>
+#endif //LINUX
+
+
+#ifdef WIN32
+	#include <windows.h>
+#endif 
+
+extern "C" {
+	#include "third_party/cute_png.h"
+}
+
+
 static const char *charMap = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
 
 static uint32_t lcm(uint32_t m, uint32_t n);
@@ -149,4 +163,43 @@ inline static uint8_t get_char_code(uint8_t color)
 
 	int32_t index = fmax(0, fmin(float(color) / scale, charMapLen - 1));
 	return charMap[index];
+}
+
+bool ascii_png(const char *pathname, float scaleX, float scaleY)
+{
+	cp_image_t png = cp_load_png(pathname);
+	int imageSize = png.w * png.h;
+	uint8_t *image = (uint8_t *)malloc(imageSize);
+	memset(image, 0, imageSize);
+	for(int x = 0; x < png.w; x ++){
+		for(int y = 0; y < png.h; y ++){
+			cp_pixel_t pixel = png.pix[y * png.w + x];
+			uint8_t color = pixel.r*0.299 + pixel.g*0.587 + pixel.b*0.114;
+			image[y * png.w + x] = color;
+		}
+	}
+
+	uint32_t buffSize;
+
+	convert_image_to_ascii(image, png.w, png.h, scaleX, scaleY, nullptr, 0, &buffSize);
+	char *buffer = (char *)malloc(buffSize);
+	convert_image_to_ascii(image, png.w, png.h, scaleX, scaleY, buffer, buffSize, 0);
+
+	#ifdef LINUX
+		initscr();
+		move(0, 0);
+		waddstr(stdscr, buffer);
+		refresh();
+		getch();
+		endwin();
+	#else
+		system("cls");
+		printf("%s", buffer);
+	#endif //LINUX
+
+	free(buffer);
+	free(image);
+	cp_free_png(&png);
+
+	return true;
 }

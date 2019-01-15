@@ -11,16 +11,8 @@
 
 #include <string.h>
 
-#ifdef LINUX
-	#include <curses.h>
-#endif //LINUX
-
 #include <stdlib.h>
 #include <stdio.h>
-
-extern "C" {
-	#include "third_party/cute_png.h"
-}
 
 #include "module/ascii_image.h"
 
@@ -37,9 +29,7 @@ bool try_play_video(const std::string &pathname, float scale, float scaleX, floa
 
 	if(paramValid)
 	{
-
 		const char *cPathname = pathname.c_str();
-
 		if(!FSUtils::is_exists(cPathname))
 		{
 			log_error("%s doesn't exist!", cPathname);
@@ -48,52 +38,13 @@ bool try_play_video(const std::string &pathname, float scale, float scaleX, floa
 		{
 			const char * file_ext = FSUtils::get_file_ext(cPathname);
 			if(strcmp(file_ext, "png") == 0){
-				cp_image_t png = cp_load_png(cPathname);
-				// printf("png info width: %d heighe: %d\n", png.w, png.h);
-				int imageSize = png.w * png.h;
-				uint8_t *image = (uint8_t *)malloc(imageSize);
-				memset(image, 0, imageSize);
-				for(int x = 0; x < png.w; x ++){
-					for(int y = 0; y < png.h; y ++){
-						cp_pixel_t pixel = png.pix[y * png.w + x];
-						uint8_t color = pixel.r*0.299 + pixel.g*0.587 + pixel.b*0.114;
-						image[y * png.w + x] = color;
-					}
-				}
-
-
-				uint32_t buffSize;
-
 				if(scaleX < 0){
 					scaleX = scale;
 				}
-
 				if(scaleY < 0){
 					scaleY = scale;
 				}
-
-
-				convert_image_to_ascii(image, png.w, png.h, scaleX, scaleY, nullptr, 0, &buffSize);
-				char *buffer = (char *)malloc(buffSize);
-				convert_image_to_ascii(image, png.w, png.h, scaleX, scaleY, buffer, buffSize, 0);
-
-
-				#ifdef LINUX
-					initscr();
-					move(0, 0);
-					waddstr(stdscr, buffer);
-					refresh();
-					getch();
-					endwin();
-				#else
-					printf("%s", buffer);
-				#endif //LINUX
-
-				free(buffer);
-				free(image);
-				cp_free_png(&png);
-
-
+				return ascii_png(cPathname, scaleX, scaleY);
 			}
 			else{
 				log_error("%s is not supported!.\n", file_ext);

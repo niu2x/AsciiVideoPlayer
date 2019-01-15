@@ -1,0 +1,5 @@
+Import("env")
+
+# subEnv = Environment()
+
+# libffmpeg = subEnv.Library('ffmpeg', source = [])
