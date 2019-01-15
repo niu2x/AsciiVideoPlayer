@@ -11,10 +11,12 @@
 
 #include <string.h>
 
-#include <curses.h>
+#ifdef LINUX
+	#include <curses.h>
+#endif //LINUX
+
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 
 extern "C" {
 	#include "third_party/cute_png.h"
@@ -75,15 +77,17 @@ bool try_play_video(const std::string &pathname, float scale, float scaleX, floa
 				char *buffer = (char *)malloc(buffSize);
 				convert_image_to_ascii(image, png.w, png.h, scaleX, scaleY, buffer, buffSize, 0);
 
-				// printf("%s", buffer);
 
-				initscr();
-				move(0, 0);
-				waddstr(stdscr, buffer);
-				refresh();
-				getch();
-				endwin();
-
+				#ifdef LINUX
+					initscr();
+					move(0, 0);
+					waddstr(stdscr, buffer);
+					refresh();
+					getch();
+					endwin();
+				#else
+					printf("%s", buffer);
+				#endif //LINUX
 
 				free(buffer);
 				free(image);

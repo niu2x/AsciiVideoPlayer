@@ -50,9 +50,9 @@ SConscript('src/third_party/SCSub')
 SConscript('src/module/SCSub')
 SConscript('src/platform/' + platformArg + '/SCSub')
 
-env.add_lib('curses')
+if platformArg == 'Linux':
+	env.add_lib('curses')
 
 env.Program(target = BIN_NAME, source = ['src/main.cpp'] + env.get_source_files(), LIBS = env.get_libs())
-env.Program(target = 'testRef', source = ['src/test/test-ref.cpp'] + env.get_source_files())
-env.Program(target = 'test-curses', source = ['src/test/test-curses.cpp'], LIBS=['curses'])
-
+# env.Program(target = 'testRef', source = ['src/test/test-ref.cpp'] + env.get_source_files())
+# env.Program(target = 'test-curses', source = ['src/test/test-curses.cpp'], LIBS=['curses'])
