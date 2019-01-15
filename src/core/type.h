@@ -10,10 +10,10 @@
 
 // #endif //WIN32
 
-// #ifdef LINUX
+// #ifdef OSX
 
 #include <string>
 
-// #endif // LINUX
+// #endif // OSX
 
 #endif

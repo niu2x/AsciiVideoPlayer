@@ -2,9 +2,9 @@
 #include "core/log.h"
 #include <math.h>
 
-#ifdef LINUX
+#ifdef OSX
 	#include <curses.h>
-#endif //LINUX
+#endif //OSX
 
 
 #ifdef WIN32
@@ -185,7 +185,7 @@ bool ascii_png(const char *pathname, float scaleX, float scaleY)
 	char *buffer = (char *)malloc(buffSize);
 	convert_image_to_ascii(image, png.w, png.h, scaleX, scaleY, buffer, buffSize, 0);
 
-	#ifdef LINUX
+	#ifdef OSX
 		initscr();
 		move(0, 0);
 		waddstr(stdscr, buffer);
@@ -195,7 +195,7 @@ bool ascii_png(const char *pathname, float scaleX, float scaleY)
 	#else
 		system("cls");
 		printf("%s", buffer);
-	#endif //LINUX
+	#endif //OSX
 
 	free(buffer);
 	free(image);

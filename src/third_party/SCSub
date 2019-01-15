@@ -6,8 +6,16 @@ env.add_source_files([
 subEnv = Environment()
 libCutePNG = subEnv.Library(source=['cute_png.c'])
 
+if env.get_platform() == 'osx':
+	env.add_lib('ffmpeg/libavfilter/libavfilter.a')
+	env.add_lib('ffmpeg/libavformat/libavformat.a')
+	env.add_lib('ffmpeg/libavdevice/libavdevice.a')
+	env.add_lib('ffmpeg/libavcodec/libavcodec.a')
+	env.add_lib('ffmpeg/libswscale/libswscale.a')
+	env.add_lib('ffmpeg/libavutil/libavutil.a')
+	env.add_lib('ffmpeg/libswresample/libswresample.a')
+
+
 env.add_lib(libCutePNG)
 
-Export("env")
-
-# SConscript('ffmpeg/SCSub')
+env.Append(CPPPATH=['#src/third_party/ffmpeg'])

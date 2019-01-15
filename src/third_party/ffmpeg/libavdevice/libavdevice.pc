@@ -6,9 +6,9 @@ includedir=/usr/local/include
 Name: libavdevice
 Description: FFmpeg device handling library
 Version: 58.6.101
-Requires: libavfilter >= 7.48.100, libswscale >= 5.4.100, libavformat >= 58.25.100, libavcodec >= 58.43.101, libswresample >= 3.4.100, libavutil >= 56.25.100
+Requires: libavfilter >= 7.48.100, libswscale >= 5.4.100, libavformat >= 58.25.100, libavcodec >= 58.43.101, libswresample >= 3.4.100, libavutil >=
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lavdevice -lgdi32 -lm -lvfw32 -lxcb -lxcb-shm -lxcb -lxcb-shape -lxcb -lxcb-xfixes -lxcb-render -lxcb-shape -lxcb
+Libs: -L${libdir}  -lavdevice -framework Foundation -lm -framework AVFoundation -framework CoreVideo -framework CoreMedia -pthread -framework CoreGraphics
 Libs.private: 
 Cflags: -I${includedir}
