@@ -69,6 +69,9 @@ class MyEnvironment(Environment):
 	def get_test(self):
 		return self.testMainSource
 
+	def define(self, name, value = None):
+		self.Append(CCFLAGS = ['-D' + name])
+
 env = MyEnvironment()
 
 Export("env")
@@ -86,6 +89,7 @@ if platformArg == 'osx':
 	env.add_system_lib('iconv')
 	env.add_system_lib('bz2')
 	env.Append(FRAMEWORKS = Split('VideoToolbox CoreVideo CoreMedia CoreFoundation Security CoreAudio AudioToolBox'))
+	env.define('__STDC_CONSTANT_MACROS')
 
 env.Program(target = BIN_NAME, source = ['src/main.cpp'] + env.get_source_files(), LIBS = env.get_libs() + env.get_system_lib())
 

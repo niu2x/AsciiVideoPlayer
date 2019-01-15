@@ -21,7 +21,7 @@ static const char *charMap = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[
 static uint32_t lcm(uint32_t m, uint32_t n);
 
 inline static uint8_t get_color(
-	uint8_t * image, 
+	const uint8_t * image, 
 	uint32_t width, uint32_t height, 
 	uint32_t aWidth, uint32_t aHeight, 
 	uint32_t lcmWidth, uint32_t lcmHeight,
@@ -31,7 +31,7 @@ inline static uint8_t get_char_code(uint8_t color);
 
 
 bool convert_image_to_ascii(
-	uint8_t *image, 
+	const uint8_t *image, 
 	uint32_t width, 
 	uint32_t height, 
 	float scaleX,
@@ -96,7 +96,7 @@ static uint32_t lcm(uint32_t m, uint32_t n)
 
 
 inline static uint8_t get_color(
-	uint8_t * image, 
+	const uint8_t * image, 
 	uint32_t width, uint32_t height, 
 	uint32_t aWidth, uint32_t aHeight, 
 	uint32_t lcmWidth, uint32_t lcmHeight,
@@ -163,6 +163,40 @@ inline static uint8_t get_char_code(uint8_t color)
 
 	int32_t index = fmax(0, fmin(float(color) / scale, charMapLen - 1));
 	return charMap[index];
+}
+
+
+void ascii_begin(){
+
+	#ifdef OSX
+		initscr();
+	#endif //OSX
+}
+
+
+void ascii_end(){
+
+	#ifdef OSX
+		endwin();
+	#endif //OSX
+}
+
+bool ascii_raw_image(const uint8_t *image, uint32_t w, uint32_t h, float scaleX, float scaleY){
+	uint32_t buffSize;
+	convert_image_to_ascii(image, w, h, scaleX, scaleY, nullptr, 0, &buffSize);
+	char *buffer = (char *)malloc(buffSize);
+	convert_image_to_ascii(image, w, h, scaleX, scaleY, buffer, buffSize, 0);
+
+	#ifdef OSX
+		move(0, 0);
+		waddstr(stdscr, buffer);
+		refresh();
+	#else
+		system("cls");
+		printf("%s", buffer);
+	#endif //OSX
+
+	return true;
 }
 
 bool ascii_png(const char *pathname, float scaleX, float scaleY)

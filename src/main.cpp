@@ -16,6 +16,9 @@
 
 #include "module/ascii_image.h"
 
+#include "module/decode_video.h"
+
+#include <unistd.h>
 
 bool try_play_video(const std::string &pathname, float scale, float scaleX, float scaleY)
 {
@@ -36,15 +39,48 @@ bool try_play_video(const std::string &pathname, float scale, float scaleX, floa
 		}
 		else
 		{
+
+			if(scaleX < 0){
+				scaleX = scale;
+			}
+			if(scaleY < 0){
+				scaleY = scale;
+			}
+
 			const char * file_ext = FSUtils::get_file_ext(cPathname);
 			if(strcmp(file_ext, "png") == 0){
-				if(scaleX < 0){
-					scaleX = scale;
-				}
-				if(scaleY < 0){
-					scaleY = scale;
-				}
+				
 				return ascii_png(cPathname, scaleX, scaleY);
+			}
+			else if(strcmp(file_ext, "mp4") == 0 || strcmp(file_ext, "rmvb") == 0){
+				VideoDecoder decoder(cPathname);
+				if(decoder.init()){
+					log_info("video width: %d height: %d\n", decoder.getWidth(), decoder.getHeight());
+					uint8_t *buffer = (uint8_t*)malloc(1024*1024*1024);
+					uint32_t out;
+
+
+					uint32_t width = decoder.getWidth();
+					uint32_t height = decoder.getHeight();
+					uint8_t *image = (uint8_t *)malloc(width * height);
+
+					ascii_begin();
+
+					while(decoder.getNextFrame(buffer, 1024*1024*1024, &out)){
+
+						memcpy(image, buffer, width * height);
+
+						ascii_raw_image(image, width, height, scaleX, scaleY);
+						// sleep(30);
+					}
+
+					ascii_end();
+
+					free(image);
+
+					log_info("out: %u\n", out);
+					free(buffer);
+				}
 			}
 			else{
 				log_error("%s is not supported!.\n", file_ext);

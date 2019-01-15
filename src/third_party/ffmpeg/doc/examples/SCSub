@@ -1,3 +1,4 @@
 Import("env")
 
 env.add_test("metadata", "metadata.cpp")
+env.add_test("demuxing_decoding", "demuxing_decoding.cpp")
