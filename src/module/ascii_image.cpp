@@ -80,6 +80,7 @@ static uint32_t lcm(uint32_t m, uint32_t n)
 	return m * n / a;
 }
 
+
 inline static uint8_t get_color(
 	uint8_t * image, 
 	uint32_t width, uint32_t height, 
@@ -87,21 +88,56 @@ inline static uint8_t get_color(
 	uint32_t lcmWidth, uint32_t lcmHeight,
 	uint32_t ax, uint32_t ay)
 {
-	uint32_t colorSum = 0;
-	uint32_t scaleAW = lcmWidth / aWidth;
-	uint32_t scaleAH = lcmHeight / aHeight;
+	// uint32_t colorSum = 0;
+	// uint32_t scaleAW = lcmWidth / aWidth;
+	// uint32_t scaleAH = lcmHeight / aHeight;
 
-	uint32_t scaleW = lcmWidth / width;
-	uint32_t scaleH = lcmHeight / height;
+	// uint32_t scaleW = lcmWidth / width;
+	// uint32_t scaleH = lcmHeight / height;
 
-	for(uint32_t lcmX = ax * scaleAW; lcmX < (ax+1) * scaleAW; lcmX ++){
-		for(uint32_t lcmY = ay * scaleAH; lcmY < (ay+1) * scaleAH; lcmY ++){
-			uint32_t x = lcmX / scaleW;
-			uint32_t y = lcmY / scaleH;
-			colorSum += image[ y * width + x];
+	// for(uint32_t lcmX = ax * scaleAW; lcmX < (ax+1) * scaleAW; lcmX ++){
+	// 	for(uint32_t lcmY = ay * scaleAH; lcmY < (ay+1) * scaleAH; lcmY ++){
+	// 		uint32_t x = lcmX / scaleW;
+	// 		uint32_t y = lcmY / scaleH;
+	// 		colorSum += image[ y * width + x];
+	// 	}
+	// }
+	// uint8_t color = colorSum / (scaleAW * scaleAH);
+
+
+	float colorSum = 0;
+	float areaSum = 0;
+
+	float sw = float(width) / aWidth;
+	float sh = float(height) / aHeight;
+
+	float x1 = sw * ax;
+	float y1 = sh * ay;
+
+	float x2 = x1 + sw;
+	float y2 = y1 + sh;
+
+	for(int xx = x1; xx <= x2; xx ++){
+		for(int yy = y1; yy <= y2; yy ++){
+
+			float l = x1;
+			float r = l + 1.0f;
+			float t = y1;
+			float b = t + 1.0f;
+
+			if(l < x1) l = x1;
+			if(t < y1) t = y1;
+			if(r > x2) r = x2;
+			if(b > y2) b = y2;
+
+			float area = (r - l) * (b - t);
+			areaSum += area;
+			colorSum += area * image[ yy * width + xx];
 		}
 	}
-	uint8_t color = colorSum / (scaleAW * scaleAH);
+
+	uint32_t color = colorSum / areaSum;
+
 	return color;
 }
 
