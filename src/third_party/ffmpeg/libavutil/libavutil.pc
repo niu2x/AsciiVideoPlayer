@@ -9,6 +9,6 @@ Version:
 Requires: 
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lavutil -pthread -lm -framework VideoToolbox -framework CoreFoundation -framework CoreMedia -framework CoreVideo -framework CoreServices
+Libs: -L${libdir}  -lavutil -pthread -lm -luser32 -lbcrypt
 Libs.private: 
 Cflags: -I${includedir}

@@ -15,6 +15,15 @@ if env.get_platform() == 'osx':
 	env.add_lib('ffmpeg/libavutil/libavutil.a')
 	env.add_lib('ffmpeg/libswresample/libswresample.a')
 
+if env.get_platform() == 'windows':
+	env.add_lib('ffmpeg/prebuild/libavfilter.lib')
+	env.add_lib('ffmpeg/prebuild/libavformat.lib')
+	env.add_lib('ffmpeg/prebuild/libavdevice.lib')
+	env.add_lib('ffmpeg/prebuild/libavcodec.lib')
+	env.add_lib('ffmpeg/prebuild/libswscale.lib')
+	env.add_lib('ffmpeg/prebuild/libavutil.lib')
+	env.add_lib('ffmpeg/prebuild/libswresample.lib')
+
 
 env.add_lib(libCutePNG)
 

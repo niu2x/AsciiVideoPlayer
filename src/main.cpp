@@ -18,7 +18,11 @@
 
 #include "module/decode_video.h"
 
+#ifdef OSX
+
 #include <unistd.h>
+
+#endif
 
 bool try_play_video(const std::string &pathname, float scale, float scaleX, float scaleY)
 {
@@ -52,7 +56,11 @@ bool try_play_video(const std::string &pathname, float scale, float scaleX, floa
 				
 				return ascii_png(cPathname, scaleX, scaleY);
 			}
-			else if(strcmp(file_ext, "mp4") == 0 || strcmp(file_ext, "rmvb") == 0){
+			else if(
+				strcmp(file_ext, "mp4") == 0 
+				|| strcmp(file_ext, "rmvb") == 0
+				|| strcmp(file_ext, "wmv") == 0
+			){
 				VideoDecoder decoder(cPathname);
 				if(decoder.init()){
 					log_info("video width: %d height: %d\n", decoder.getWidth(), decoder.getHeight());

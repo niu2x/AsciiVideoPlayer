@@ -5,7 +5,7 @@ includedir=.
 
 Name: libswresample
 Description: FFmpeg audio resampling library
-Version: 3.4.100
+Version: 
 Requires:  libavutil >= 
 Conflicts:
 Libs: -L${libdir} -Wl,-rpath,${libdir} -lswresample -lm

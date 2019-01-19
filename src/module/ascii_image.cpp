@@ -181,6 +181,22 @@ void ascii_end(){
 	#endif //OSX
 }
 
+
+#ifdef WIN32 
+
+#include <conio.h>
+#include <windows.h>
+
+void setcursor(int x, int y)
+{
+    HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD setps;
+    setps.X = x; setps.Y = y;
+    SetConsoleCursorPosition(hCon, setps);
+}
+
+#endif //WIN32
+
 bool ascii_raw_image(const uint8_t *image, uint32_t w, uint32_t h, float scaleX, float scaleY){
 	uint32_t buffSize;
 	convert_image_to_ascii(image, w, h, scaleX, scaleY, nullptr, 0, &buffSize);
@@ -191,8 +207,11 @@ bool ascii_raw_image(const uint8_t *image, uint32_t w, uint32_t h, float scaleX,
 		move(0, 0);
 		waddstr(stdscr, buffer);
 		refresh();
-	#else
-		system("cls");
+	#endif
+
+	#ifdef WIN32
+		setcursor(0,0);
+		Sleep(10);
 		printf("%s", buffer);
 	#endif //OSX
 

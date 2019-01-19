@@ -8,5 +8,5 @@ Description: FFmpeg utility library
 Version: 
 Requires: 
 Conflicts:
-Libs: -L${libdir} -Wl,-rpath,${libdir} -lavutil -pthread -lm -framework VideoToolbox -framework CoreFoundation -framework CoreMedia -framework CoreVideo -framework CoreServices
+Libs: -L${libdir} -Wl,-rpath,${libdir} -lavutil -pthread -lm -luser32 -lbcrypt
 Cflags: -I${includedir}

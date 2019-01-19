@@ -8,24 +8,14 @@ if not platformArg:
 	print 'please set platform'
 	sys.exit(255)
 
-cFlags = ''
 
-if platformArg == "windows":
-	cFlags +='-DWIN32 '
-elif platformArg == 'linux':
-	cFlags +='-DLINUX '
-elif platformArg == 'osx':
-	cFlags +='-DOSX '
-
-
-cFlags += '-std=c++11 '
 
 os.system(os.path.join('tools', 'gen_version.py'))
 os.system(os.path.join('tools', 'gen_config.py'))
 
 class MyEnvironment(Environment):
 	def __init__(self):
-		super(MyEnvironment, self).__init__(CPPPATH = '#src', CCFLAGS = cFlags)
+		super(MyEnvironment, self).__init__(CPPPATH = '#src')
 		self.sourceFiles = []
 		self.libs = []
 		self.sysLibs = []
@@ -82,6 +72,17 @@ SConscript('src/module/SCSub')
 SConscript('src/platform/' + platformArg + '/SCSub')
 SConscript('src/third_party/ffmpeg/doc/examples/SCSub')
 
+
+
+if platformArg == "windows":
+	env.Append(CCFLAGS = '-DWIN32')
+elif platformArg == 'linux':
+	env.Append(CCFLAGS = '-DLINUX')
+elif platformArg == 'osx':
+	env.Append(CCFLAGS = '-DOSX')
+env.Append(CCFLAGS = '-std=c++11')
+
+
 if platformArg == 'osx':
 	env.add_system_lib('curses')
 	env.add_system_lib('z')
@@ -91,10 +92,23 @@ if platformArg == 'osx':
 	env.Append(FRAMEWORKS = Split('VideoToolbox CoreVideo CoreMedia CoreFoundation Security CoreAudio AudioToolBox'))
 	env.define('__STDC_CONSTANT_MACROS')
 
+if platformArg == 'windows':
+	env.define('__STDC_CONSTANT_MACROS')
+	env.Append(CCFLAGS = ["/MD"])
+	env.add_system_lib('Advapi32')
+	env.add_system_lib('Kernel32')
+	env.add_system_lib('User32')
+	env.add_system_lib('Ole32')
+	env.add_system_lib('Shell32')
+
+
+
+
 env.Program(target = BIN_NAME, source = ['src/main.cpp'] + env.get_source_files(), LIBS = env.get_libs() + env.get_system_lib())
 
 for v in env.get_test():
-	env.Program(target = v[0], source = [v[1]] + env.get_source_files(), LIBS = env.get_libs() + env.get_system_lib())
+	# env.Program(target = v[0], source = [v[1]] + env.get_source_files(), LIBS = env.get_libs() + env.get_system_lib())
+	pass
 
 # env.Program(target = 'test-printf', source = ['src/test/test-printf.cpp'] + env.get_source_files(), LIBS = env.get_libs())
 # env.Program(target = 'testRef', source = ['src/test/test-ref.cpp'] + env.get_source_files())

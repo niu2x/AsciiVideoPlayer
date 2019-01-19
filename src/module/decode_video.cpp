@@ -39,7 +39,7 @@ int VideoDecoder::decode_packet(int *got_frame, int cached)
         /* decode video frame */
         ret = avcodec_decode_video2(video_dec_ctx, frame, got_frame, &pkt);
         if (ret < 0) {
-            fprintf(stderr, "Error decoding video frame (%s)\n", av_err2str(ret));
+            // fprintf(stderr, "Error decoding video frame (%s)\n", av_err2str(ret));
             return ret;
         }
 
